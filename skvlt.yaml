@@ -1,0 +1,37 @@
+# Generated for project-scoped restoration with Skills Vault.
+total_sources: 2
+total_skills: 23
+scope: "project"
+
+sources:
+  "xixu-me/skills":
+    count: 12
+    skills:
+      - "develop-userscripts"
+      - "github-actions-docs"
+      - "openclaw-secure-linux-cloud"
+      - "opensource-guide-coach"
+      - "readme-i18n"
+      - "running-claude-code-via-litellm-copilot"
+      - "secure-linux-web-hosting"
+      - "skills-cli"
+      - "tzst"
+      - "use-my-browser"
+      - "xdrop"
+      - "xget"
+
+      
+  "lllllllama/rigorpilot-skills":
+    count: 11
+    skills:
+      - "ai-research-reproduction"
+      - "env-and-assets-bootstrap"
+      - "minimal-run-and-audit"
+      - "analyze-project"
+      - "run-train"
+      - "safe-debug"
+      - "ai-research-explore"
+      - "explore-code"
+      - "explore-run"
+      - "repo-intake-and-plan"
+      - "paper-context-resolver"
