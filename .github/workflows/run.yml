@@ -3,10 +3,7 @@ name: run
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0,48 0,4,8,12,16,20 * * *"
-    - cron: "36 1,5,9,13,17,21 * * *"
-    - cron: "24 2,6,10,14,18,22 * * *"
-    - cron: "12 3,7,11,15,19,23 * * *"
+    - cron: "*/5 * * * *"
   push:
     branches:
       - main
@@ -21,19 +18,35 @@ jobs:
     outputs:
       count: ${{ steps.matrix.outputs.count }}
       jobs: ${{ steps.matrix.outputs.jobs }}
+      should_run: ${{ steps.matrix.outputs.should_run }}
     steps:
       - id: matrix
         name: Build random matrix
         shell: bash
         run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            minute="$(date -u +%M)"
+            hour="$(date -u +%H)"
+            tick=$(( (10#$hour * 60 + 10#$minute) / 5 ))
+            if [ $((tick % 10)) -ne 0 ]; then
+              echo "Skipping this scheduled tick; active ticks run about every 50 minutes."
+              echo "should_run=false" >> "$GITHUB_OUTPUT"
+              echo "count=0" >> "$GITHUB_OUTPUT"
+              echo "jobs=[]" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+
           count=$((150 + RANDOM % 107))
           jobs="$(seq -s, 1 "$count")"
+          echo "should_run=true" >> "$GITHUB_OUTPUT"
           echo "count=${count}" >> "$GITHUB_OUTPUT"
           echo "jobs=[${jobs}]" >> "$GITHUB_OUTPUT"
 
   run:
     name: run (${{ matrix.job }}/${{ needs.prepare.outputs.count }})
     needs: prepare
+    if: needs.prepare.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
